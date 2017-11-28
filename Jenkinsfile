@@ -9,7 +9,7 @@ node {
   docker.image('christopherhein/${JOB_NAME}').push('${BUILD_NUMBER}')
 
   stage 'update k8s config'
-  sh 'sed -i 's/BUILD_TAG/${BUILD_NUMBER}/g' configs/app.yml'
+  sh "sed -i 's/BUILD_TAG/${BUILD_NUMBER}/g' configs/app.yml"
 
   stage 'deploy k8s config'
   node {

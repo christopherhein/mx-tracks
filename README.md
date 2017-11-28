@@ -1,4 +1,4 @@
-# DC/OS K8S Demo
+# MX Track
 
-This repo is meant to demo using Jenkins running on DC/OS to publish to
-Kubernetes on DC/OS.
+This is a demo for deploying applications K8s using Jenkins and using pipeline
+jobs.
