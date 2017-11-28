@@ -6,13 +6,15 @@ node {
     checkout scm
   }
 
+  def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+
   stage('Build Container') {
     container = docker.build(repo)
   }
 
   stage('Push Container') {
     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-      container.push("${BUILD_NUMBER}")
+      container.push(shortCommit)
       container.push("latest")
     }
   }
@@ -26,18 +28,18 @@ node {
       dockerAddress: 'unix:///var/run/docker.sock', \
       ignoreImageBuildTime: false, key: '', logLevel: 'true', \
       policy: 'warn', repository: repo, \
-      requirePackageUpdate: false, tag: '${BUILD_NUMBER}', timeout: 10
+      requirePackageUpdate: false, tag: shortCommit, timeout: 10
   }
 
   stage('Publish Container') {
     twistlockPublish ca: '', cert: '', \
       dockerAddress: 'unix:///var/run/docker.sock', key: '', \
-      logLevel: 'true', repository: repo, tag: '${BUILD_NUMBER}', \
+      logLevel: 'true', repository: repo, tag: shortCommit, \
       timeout: 10
    }
 
   stage('Update k8s Config') {
-    sh "sed -i 's/VERSION_NUMBER/${BUILD_NUMBER}/g' configs/app.yml"
+    sh "sed -i 's/VERSION_NUMBER/${shortCommit}/g' configs/app.yml"
   }
 
   stage('Deploy k8s config') {
