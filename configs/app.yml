@@ -26,6 +26,6 @@ spec:
     spec:
       containers:
       - name: tracks
-        image: christopherhein/mx-tracks:VERSION_NUMBER
+        image: IMAGE_URL:VERSION_NUMBER
         ports:
         - containerPort: 4567
